@@ -1,7 +1,10 @@
 /* style.css */
+html {
+    scroll-behavior: smooth; /* ده المسؤول عن الانتقال السلس بين السكشنات */
+}
+
 body {
     font-family: 'Cairo', sans-serif;
-    scroll-behavior: smooth;
 }
 
 ::-webkit-scrollbar {
