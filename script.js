@@ -143,4 +143,29 @@ function triggerDownload() {
         }, 500);
 
     }, 1800);
-}
+}// Scroll Spy - تفعيل تأثير الـ Active/Hover على الناڤبار حسب السكشن الحالي
+window.addEventListener('scroll', () => {
+    const sections = document.querySelectorAll('section');
+    const navLinks = document.querySelectorAll('.nav-link');
+    
+    let currentSection = '';
+    
+    sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.clientHeight;
+        // تحديد المسافة عند دخول السكشن
+        if (window.scrollY >= (sectionTop - 250)) {
+            currentSection = section.getAttribute('id');
+        }
+    });
+
+    navLinks.forEach(link => {
+        // إزالة التأثير النشط من كل الروابط
+        link.classList.remove('text-amber-400', 'bg-zinc-800/80');
+        
+        // لو الـ href بتاع الرابط بيطابق السكشن الحالي، نفعله
+        if (link.getAttribute('href') === `#${currentSection}`) {
+            link.classList.add('text-amber-400', 'bg-zinc-800/80');
+        }
+    });
+});
