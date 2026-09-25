@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم الأدمن - Kaza Mix</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-zinc-950 text-zinc-100 min-h-screen flex flex-col font-['Cairo'] p-4 sm:p-8 space-y-8">
+
+    <header class="bg-zinc-900 border border-zinc-800 p-4 rounded-2xl flex justify-between items-center shadow-xl">
+        <h1 class="text-xl font-black text-amber-400">لوحة تحكم إدارة المطعم</h1>
+        <div class="flex gap-2">
+            <a href="index.html" class="bg-zinc-800 text-zinc-200 text-xs px-3 py-2 rounded-xl font-bold flex items-center gap-1">الذهاب للموقع</a>
+            <button onclick="localStorage.removeItem('kazamix_user'); window.location.href='index.html';" class="bg-red-500/20 text-red-400 text-xs px-3 py-2 rounded-xl font-bold cursor-pointer">تسجيل خروج</button>
+        </div>
+    </header>
+
+    <!-- Orders Section -->
+    <div class="bg-zinc-900/60 border border-zinc-800 rounded-3xl p-6 space-y-4">
+        <h3 class="text-lg font-black text-white">إدارة طلبات الزبائن الحية</h3>
+        <div class="overflow-x-auto">
+            <table class="w-full text-right text-xs">
+                <thead>
+                    <tr class="text-zinc-400 border-b border-zinc-800">
+                        <th class="py-2">رقم الطلب</th>
+                        <th>العميل</th>
+                        <th>الهاتف</th>
+                        <th>العنوان</th>
+                        <th>الأصناف</th>
+                        <th>الدفع</th>
+                        <th>الإجمالي</th>
+                        <th>الحالة</th>
+                    </tr>
+                </thead>
+                <tbody id="admin-orders-table" class="divide-y divide-zinc-800/50">
+                    <tr><td colspan="8" class="text-center py-4 text-zinc-500">جاري التحميل...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Offers Manager -->
+    <div class="bg-zinc-900/60 border border-zinc-800 rounded-3xl p-6 space-y-4">
+        <h3 class="text-lg font-black text-white">إدارة العروض الحصرية</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-zinc-950 p-4 rounded-2xl border border-zinc-800">
+            <input type="text" id="offer-title" placeholder="عنوان العرض (مثال: عرض العيلة)" class="bg-zinc-900 border border-zinc-800 p-2.5 rounded-xl text-xs text-white outline-none">
+            <input type="number" id="offer-price" placeholder="السعر" class="bg-zinc-900 border border-zinc-800 p-2.5 rounded-xl text-xs text-white outline-none">
+            <input type="text" id="offer-badge" placeholder="الشارة (مثال: وفر 30% / الأكثر طلباً)" class="bg-zinc-900 border border-zinc-800 p-2.5 rounded-xl text-xs text-white outline-none">
+            <div class="flex flex-col space-y-1">
+                <label class="text-[11px] text-zinc-400">صورة العرض من ملفات الجهاز:</label>
+                <input type="file" id="offer-img-file" accept="image/*" class="bg-zinc-900 border border-zinc-800 p-2 rounded-xl text-xs text-white outline-none file:mr-4 file:py-1 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-500 file:text-zinc-950 hover:file:bg-amber-400 cursor-pointer">
+            </div>
+            <textarea id="offer-desc" placeholder="وصف العرض والمكونات" class="bg-zinc-900 border border-zinc-800 p-2.5 rounded-xl text-xs text-white sm:col-span-2 outline-none" rows="2"></textarea>
+            <button onclick="addNewOffer()" class="bg-amber-500 text-zinc-950 font-bold py-2.5 rounded-xl text-xs sm:col-span-2 cursor-pointer">نشر عرض جديد</button>
+        </div>
+        <div id="admin-offers-list" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+    </div>
+
+    <!-- Menu Manager -->
+    <div class="bg-zinc-900/60 border border-zinc-800 rounded-3xl p-6 space-y-4">
+        <h3 class="text-lg font-black text-white">إدارة قائمة المنيو والأصناف</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-zinc-950 p-4 rounded-2xl border border-zinc-800">
+            <input type="text" id="meal-name" placeholder="اسم الوجبة" class="bg-zinc-900 border border-zinc-800 p-2.5 rounded-xl text-xs text-white outline-none">
+            <input type="number" id="meal-price" placeholder="السعر" class="bg-zinc-900 border border-zinc-800 p-2.5 rounded-xl text-xs text-white outline-none">
+            <div class="flex flex-col space-y-1 sm:col-span-2">
+                <label class="text-[11px] text-zinc-400">صورة الوجبة من ملفات الجهاز:</label>
+                <input type="file" id="meal-img-file" accept="image/*" class="bg-zinc-900 border border-zinc-800 p-2 rounded-xl text-xs text-white outline-none file:mr-4 file:py-1 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-500 file:text-zinc-950 hover:file:bg-amber-400 cursor-pointer">
+            </div>
+            <textarea id="meal-desc" placeholder="الوصف" class="bg-zinc-900 border border-zinc-800 p-2.5 rounded-xl text-xs text-white sm:col-span-2 outline-none" rows="2"></textarea>
+            <button onclick="addNewMeal()" class="bg-amber-500 text-zinc-950 font-bold py-2.5 rounded-xl text-xs sm:col-span-2 cursor-pointer">إضافة صنف للمنيو</button>
+        </div>
+        <div id="admin-menu-list" class="grid grid-cols-1 sm:grid-cols-3 gap-3"></div>
+    </div>
+
+    <!-- PDF Manager (Direct Upload from Device) -->
+    <div class="bg-zinc-900/60 border border-zinc-800 rounded-3xl p-6 space-y-4">
+        <h3 class="text-lg font-black text-white">إدارة ملف المنيو PDF</h3>
+        <div class="flex flex-col sm:flex-row gap-3 bg-zinc-950 p-4 rounded-2xl border border-zinc-800 items-center">
+            <input type="file" id="pdf-file-input" accept="application/pdf" class="flex-1 bg-zinc-900 border border-zinc-800 p-2.5 rounded-xl text-xs text-white outline-none file:mr-4 file:py-1 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-500 file:text-zinc-950 hover:file:bg-amber-400 cursor-pointer w-full">
+            <button onclick="updatePdfFile()" class="bg-amber-500 text-zinc-950 font-bold px-6 py-3 rounded-xl text-xs cursor-pointer w-full sm:w-auto">رفع وحفظ ملف الـ PDF</button>
+        </div>
+    </div>
+
+    <script>
+        const adminUser = JSON.parse(localStorage.getItem('kazamix_user'));
+        if (!adminUser || adminUser.role !== 'admin') { alert("للدخول للأدمن فقط"); window.location.href = 'index.html'; }
+
+        function getBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        }
+
+        async function fetchAdminOrders() {
+            const res = await fetch('http://localhost:3000/api/orders');
+            const orders = await res.json();
+            const tbody = document.getElementById('admin-orders-table');
+            tbody.innerHTML = orders.length === 0 ? '<tr><td colspan="8" class="text-center py-4 text-zinc-500">لا توجد طلبات</td></tr>' : '';
+            orders.reverse().forEach(o => {
+                let itemsStr = o.items.map(i => `• ${i.name}`).join('<br>');
+                tbody.innerHTML += `
+                    <tr class="border-b border-zinc-800/50">
+                        <td class="py-3 font-bold text-amber-400">${o.orderId}</td>
+                        <td class="font-bold">${o.customerName}</td>
+                        <td>${o.customerPhone}</td>
+                        <td class="truncate max-w-xs">${o.customerAddress}</td>
+                        <td>${itemsStr}</td>
+                        <td>${o.paymentType}</td>
+                        <td class="font-bold text-emerald-400">${o.totalAmount} ج.م</td>
+                        <td>
+                            <select onchange="updateStatus('${o.orderId}', this.value)" class="bg-zinc-900 text-xs px-2 py-1 rounded-lg text-amber-300 border border-zinc-700 outline-none">
+                                <option value="قيد التجهيز" ${o.status==='قيد التجهيز'?'selected':''}>قيد التجهيز</option>
+                                <option value="قيد التوصيل" ${o.status==='قيد التوصيل'?'selected':''}>قيد التوصيل</option>
+                                <option value="تم التوصيل" ${o.status==='تم التوصيل'?'selected':''}>تم التوصيل</option>
+                            </select>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        async function updateStatus(orderId, status) {
+            await fetch(`http://localhost:3000/api/orders/${orderId}/status`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status })
+            });
+            fetchAdminOrders();
+        }
+
+        async function fetchAdminOffers() {
+            const res = await fetch('http://localhost:3000/api/offers');
+            const offers = await res.json();
+            const list = document.getElementById('admin-offers-list');
+            list.innerHTML = '';
+            offers.forEach(o => {
+                list.innerHTML += `
+                    <div class="bg-zinc-950 p-3 rounded-xl flex justify-between items-center text-xs border border-zinc-800">
+                        <div class="flex items-center gap-2">
+                            <img src="${o.img}" class="w-8 h-8 rounded-lg object-cover">
+                            <div><b class="text-white">${o.title}</b> (${o.price} ج.م)</div>
+                        </div>
+                        <button onclick="deleteOffer(${o.id})" class="text-red-400 cursor-pointer"><i class="fa-solid fa-trash"></i> حذف</button>
+                    </div>
+                `;
+            });
+        }
+
+        async function addNewOffer() {
+            const title = document.getElementById('offer-title').value;
+            const price = document.getElementById('offer-price').value;
+            const badge = document.getElementById('offer-badge').value;
+            const fileInput = document.getElementById('offer-img-file');
+            const desc = document.getElementById('offer-desc').value;
+
+            if(!title || !price) return alert("أدخل عنوان العرض وسعره!");
+
+            let img = 'https://images.unsplash.com/photo-1568901346375';
+            if (fileInput.files && fileInput.files[0]) {
+                img = await getBase64(fileInput.files[0]);
+            }
+
+            await fetch('http://localhost:3000/api/offers', {
+                method: 'POST',
+                headers: {'Content-Type':'application/json'},
+                body: JSON.stringify({ title, price, badge, img, desc })
+            });
+            alert("تم نشر العرض بنجاح!");
+            fetchAdminOffers();
+        }
+
+        async function deleteOffer(id) {
+            await fetch(`http://localhost:3000/api/offers/${id}`, { method: 'DELETE' });
+            fetchAdminOffers();
+        }
+
+        async function fetchAdminMenu() {
+            const res = await fetch('http://localhost:3000/api/menu');
+            const menu = await res.json();
+            const list = document.getElementById('admin-menu-list');
+            list.innerHTML = '';
+            menu.forEach(m => {
+                list.innerHTML += `
+                    <div class="bg-zinc-950 p-3 rounded-xl flex justify-between items-center text-xs border border-zinc-800">
+                        <div class="flex items-center gap-2">
+                            <img src="${m.img}" class="w-8 h-8 rounded-lg object-cover">
+                            <span>${m.name} (${m.price} ج.م)</span>
+                        </div>
+                        <button onclick="deleteMeal(${m.id})" class="text-red-400 cursor-pointer"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                `;
+            });
+        }
+
+        async function addNewMeal() {
+            const name = document.getElementById('meal-name').value;
+            const price = document.getElementById('meal-price').value;
+            const fileInput = document.getElementById('meal-img-file');
+            const desc = document.getElementById('meal-desc').value;
+            if(!name || !price) return alert("أدخل الاسم والسعر");
+
+            let img = 'https://images.unsplash.com/photo-1568901346375';
+            if (fileInput.files && fileInput.files[0]) {
+                img = await getBase64(fileInput.files[0]);
+            }
+
+            await fetch('http://localhost:3000/api/menu', { 
+                method: 'POST', 
+                headers: {'Content-Type':'application/json'}, 
+                body: JSON.stringify({name, price, img, desc}) 
+            });
+            alert("تم إضافة الوجبة بنجاح!");
+            fetchAdminMenu();
+        }
+
+        async function deleteMeal(id) {
+            await fetch(`http://localhost:3000/api/menu/${id}`, { method: 'DELETE' });
+            fetchAdminMenu();
+        }
+
+        async function updatePdfFile() {
+            const fileInput = document.getElementById('pdf-file-input');
+            if(!fileInput.files || !fileInput.files[0]) return alert("اختر ملف PDF أولاً من جهازك!");
+
+            const pdfUrl = await getBase64(fileInput.files[0]);
+            const res = await fetch('http://localhost:3000/api/settings/pdf', {
+                method: 'POST',
+                headers: {'Content-Type':'application/json'},
+                body: JSON.stringify({ pdfUrl })
+            });
+            const result = await res.json();
+            if(result.success) alert("تم رفع وحفظ ملف المنيو PDF بنجاح!");
+        }
+
+        fetchAdminOrders();
+        fetchAdminOffers();
+        fetchAdminMenu();
+    </script>
+</body>
+</html>
