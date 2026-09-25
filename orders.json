@@ -1,1 +1,29 @@
-[]
+[
+  {
+    "customerName": "مدير المطعم",
+    "customerPhone": "014",
+    "customerAddress": "kn",
+    "paymentType": "كاش",
+    "items": [
+      {
+        "name": "لوديد فرايز بالجبنة",
+        "price": 75,
+        "addons": []
+      },
+      {
+        "name": "كريسبي تشيكن برجر",
+        "price": 145,
+        "addons": []
+      },
+      {
+        "name": "دابل سماش برجر",
+        "price": 160,
+        "addons": []
+      }
+    ],
+    "totalAmount": 380,
+    "orderId": "#KM-4450",
+    "date": "٢٥‏/٩‏/٢٠٢٦، ٤:٤٣:٢٩ م",
+    "status": "قيد التجهيز"
+  }
+]
