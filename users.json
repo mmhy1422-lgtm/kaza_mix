@@ -4,5 +4,11 @@
     "email": "admin@kazamix.com",
     "password": "admin123",
     "role": "admin"
+  },
+  {
+    "name": "mo",
+    "email": "mmhy1422@gmail.com",
+    "password": "11",
+    "role": "customer"
   }
 ]

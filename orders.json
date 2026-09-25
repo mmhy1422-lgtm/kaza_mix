@@ -1,1 +1,19 @@
-[]
+[
+  {
+    "customerName": "mo",
+    "customerPhone": "35",
+    "customerAddress": "555",
+    "paymentType": "كاش",
+    "items": [
+      {
+        "name": "jh",
+        "price": 22,
+        "addons": []
+      }
+    ],
+    "totalAmount": 22,
+    "orderId": "KM-7725",
+    "date": "٢٥‏/٩‏/٢٠٢٦، ٩:٠٢:٥٥ م",
+    "status": "قيد التجهيز"
+  }
+]
